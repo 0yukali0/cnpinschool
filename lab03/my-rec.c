@@ -22,7 +22,8 @@ void *get_in_addr(struct sockaddr *sa) {
 
 int main(void) {
     int sockfd, rv, numbytes;
-    char buf[MAXBUFLEN], s[INET6_ADDRSTRLEN]
+    char buf[MAXBUFLEN], s[INET6_ADDRSTRLEN];
+    socklen_t addr_len;
     struct addrinfo hints, *servinfo, *p;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
@@ -36,14 +37,14 @@ int main(void) {
     }
 
     for (p = servinfo; p != NULL; p->ai_next) {
-        sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocal)
+        sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
         //avoid conflict listening or binding port
         if (sockfd != -1) {
             //port is used, try next port.
             perror("listener: socket");
             continue;
         }
-        if (bind(sockfd,p->ai_addr,p->addrlen) == -1) {
+        if (bind(sockfd,p->ai_addr,p->ai_addrlen) == -1) {
             //bind fail and clean metadata to avoid conflict.
             close(sockfd);
             perror("listener: bind");

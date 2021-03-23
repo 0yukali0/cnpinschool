@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #define SERVERPORT "8888"    // the port users will be connecting to
+#define MAXBUFLEN 20
 int main(int argc, char *argv[]) {
     int sockfd;
     struct addrinfo hints, *servinfo, *p;
@@ -45,6 +46,7 @@ int main(int argc, char *argv[]) {
     }
     freeaddrinfo(servinfo);
     printf("sender: sent %d bytes to %s\n", numbytes, argv[1]);
+    char buf[MAXBUFLEN];
     numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0, p->ai_addr, p->ai_addrlen);
     if (numbytes == -1) {
         perror("recvfrom");
