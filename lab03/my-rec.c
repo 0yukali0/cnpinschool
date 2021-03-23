@@ -77,8 +77,9 @@ int main(void) {
     //send step
     char buff[20];
     time_t now = time(NULL);
-    strftime(buf, sizeof(buff), "%Y-%m-%d %H:%M:%S", localtime(&now));
-    numbytes = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr*)&their_addr, addr_len);
+    strftime(buff, sizeof(buff), "%Y-%m-%d %H:%M:%S", localtime(&now));
+    printf("Date time is %s\n",buff);
+    numbytes = sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr*)&their_addr, addr_len);
     if (numbytes == -1) {
         perror("sender: sendto");
         exit(1);
