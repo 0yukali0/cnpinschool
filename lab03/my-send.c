@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     freeaddrinfo(servinfo);
     printf("sender: sent %d bytes to %s\n", numbytes, argv[1]);
     char buf[MAXBUFLEN];
-    numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0, p->ai_addr, p->ai_addrlen);
+    numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0, p->ai_addr, &(p->ai_addrlen));
     if (numbytes == -1) {
         perror("recvfrom");
         exit(1);

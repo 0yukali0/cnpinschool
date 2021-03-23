@@ -78,7 +78,7 @@ int main(void) {
     char buff[20];
     time_t now = time(NULL);
     strftime(buf, sizeof(buff), "%Y-%m-%d %H:%M:%S", localtime(&now));
-    numbytes = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr*)&their_addr, &addr_len)
+    numbytes = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr*)&their_addr, addr_len);
     if (numbytes == -1) {
         perror("sender: sendto");
         exit(1);
