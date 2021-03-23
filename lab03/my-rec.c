@@ -39,7 +39,7 @@ int main(void) {
     for (p = servinfo; p != NULL; p->ai_next) {
         sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
         //avoid conflict listening or binding port
-        if (sockfd != -1) {
+        if (sockfd == -1) {
             //port is used, try next port.
             perror("listener: socket");
             continue;
