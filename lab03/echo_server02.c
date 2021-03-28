@@ -7,9 +7,10 @@
 #include<unistd.h> 
 #include<stdlib.h>
 #define PORT 7844
+#define MAXLINE 2000
 
 int main(int argc,char *argv[]){
-char buf[2000];
+char buf[MAXLINE+1];
 int sockfd,len,a;
 struct sockaddr_in servaddr,cliaddr;
 
@@ -20,7 +21,7 @@ if((sockfd=socket(AF_INET,SOCK_DGRAM,0))<0){
 printf("UDP Server Socket Created Successfully.\n"); 
 bzero(&servaddr,sizeof(servaddr));
 servaddr.sin_family=AF_INET;
-servaddr.sin_port=htons(argv[1]); 
+servaddr.sin_port=htons(PORT); 
 servaddr.sin_addr.s_addr=htonl(INADDR_ANY); 
 
 if(bind(sockfd,(struct sockaddr *)&servaddr,sizeof(servaddr))<0){
