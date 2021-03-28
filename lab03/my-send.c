@@ -39,22 +39,23 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "sender: failed to create socket\n");
         return 2;
     }
+    printf("UDP Client Socket Created Successfully.\n");
     if ((numbytes = sendto(sockfd, argv[2], strlen(argv[2]), 0,
              p->ai_addr, p->ai_addrlen)) == -1) {
         perror("sender: sendto");
         exit(1);
     }
     freeaddrinfo(servinfo);
-    printf("sender: sent %d bytes to %s\n", numbytes, argv[1]);
+    printf("Client : %s\n",argv[2]);
     char buf[MAXBUFLEN];
-    unsigned int len;
     struct sockaddr_in cli;
+    unsigned int len;
     numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0, (struct sockaddr*)&cli, &len);
     if (numbytes == -1) {
         perror("recvfrom");
         exit(1);
     } else {
-        printf("time is %s\n",buf);
+        printf("From Server : %s\n",buf);
     }
     close(sockfd);
     return 0;

@@ -58,7 +58,8 @@ int main(void) {
         return 2;
     }
     freeaddrinfo(servinfo);
-    printf("Waiting...\n");
+    printf("UDP Server Socket Created Successfully.\n");
+    printf("UDP Server Socket Binded.\n");
     addr_len = sizeof(their_addr);
     //recv step
     numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0, (struct sockaddr*)&their_addr, &addr_len);
@@ -66,19 +67,13 @@ int main(void) {
         perror("recvfrom");
         exit(1);
     }
-    printf("receiver: got %d bytes of packet from %s\n",
-        numbytes,
-        inet_ntop(their_addr.ss_family,
-            get_in_addr((struct sockaddr *)&their_addr),
-            s, sizeof s));
     buf[numbytes] = '\0';
-    printf("receiver: package message is \"%s\"\n",buf);
+    printf("From Client : \"%s\"\n",buf);
 
     //send step
     char buff[20];
     time_t now = time(NULL);
     strftime(buff, sizeof(buff), "%Y-%m-%d %H:%M:%S", localtime(&now));
-    printf("Date time is %s\n",buff);
     numbytes = sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr*)&their_addr, addr_len);
     if (numbytes == -1) {
         perror("sender: sendto");
