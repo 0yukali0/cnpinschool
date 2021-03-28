@@ -23,9 +23,12 @@ memset(&serv,0,sizeof(serv));
 serv.sin_family=AF_INET; 
 port = atoi(argv[2]);
 serv.sin_port=htons(port);
-if (inet_pton(AF_INET, argv[1], &serv.sin_addr) <= 0) err_quit("inet_pton error for %s", argv[1]);
+if (inet_pton(AF_INET, argv[1], &serv.sin_addr) <= 0) {
+	printf("%s fail.",argv[1]);
+	exit(0);
+}
 serv.sin_addr.s_addr=inet_addr(argv[1]);
-if(connect(sockfd, (SA *) &serv, sizeof(serv))<0) {
+if(connect(sockfd, (struct sockaddr*)&serv, sizeof(serv))<0) {
     printf("connect error\n");
     exit(0);
 }
@@ -33,21 +36,14 @@ do{
     printf("Client : ");
     fgets(buff,sizeof(buff),stdin);
     
-    Write(sockfd, buff, strlen(buff)));
-    //if((sendto(sockfd,buff,sizeof(buff),0,(struct sockaddr *)&serv,sizeof(serv)))<0) perror("ERROR IN SENDTO");
-
+    write(sockfd, buff, strlen(buff));
     strcpy(buff," ");
     int n;
-    n = Read(sockfd,buff,MAXLINE);
+    n = read(sockfd,buff,MAXLINE);
     buff[n]=0;
-    /*
-    if((recvfrom(sockfd,buff,sizeof(buff),0,(struct sockaddr *)&cliaddr,&len))<0) {
-        perror("ERROR IN RECVFROM"); 
-        exit(0);
-    }
-    */
     fputs("From Server : ",stdout); 
-    fputs(buff,stdout); 
+    fputs(buff,stdout);
+    fputs("\n",stdout); 
 }while(strcmp(buff," ")!=0);
 close(sockfd);
 return 0;

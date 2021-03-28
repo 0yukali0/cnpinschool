@@ -30,11 +30,10 @@ if(bind(sockfd,(struct sockaddr *)&servaddr,sizeof(servaddr))<0){
 }
 printf("UDP Server Socket Binded.\n"); 
 
-len=sizeof(cliaddr);
-bool 
+len=sizeof(cliaddr); 
 do {
     strcpy(buf," "); 
-    if((a=recvfrom(sockfd,buf,sizeof(buf),0,(struct sockaddr *)&cliaddr,&len))<0){
+    if(read(sockfd,buf,MAXLINE)<0){
         perror("ERROR"); 
         exit(0);
     }
@@ -42,15 +41,15 @@ do {
 
     //send step
     time_t now = time(NULL);
-    strftime(buff, sizeof(buff), "%Y-%m-%d %H:%M:%S", localtime(&now));
-    if((sendto(sockfd,buf,a,0,(struct sockaddr *)&cliaddr,len))<0){
+    strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&now));
+    if(write(sockfd,buf,MAXLINE)<0){
         perror("NOTHING SENT"); 
         exit(0);
     }
     printf("Server : ");
 
     fgets(buf,sizeof(buf),stdin);
-    if((sendto(sockfd,buf,a,0,(struct sockaddr *)&cliaddr,len))<0){
+    if(write(sockfd,buf,MAXLINE)<0){
         perror("NOTHING SENT"); 
         exit(0);
     }
