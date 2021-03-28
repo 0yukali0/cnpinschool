@@ -25,7 +25,10 @@ port = atoi(argv[2]);
 serv.sin_port=htons(port);
 if (inet_pton(AF_INET, argv[1], &serv.sin_addr) <= 0) err_quit("inet_pton error for %s", argv[1]);
 serv.sin_addr.s_addr=inet_addr(argv[1]);
-connect(sockfd, (SA *) &serv, sizeof(serv));
+if(connect(sockfd, (SA *) &serv, sizeof(serv))<0) {
+    printf("connect error\n");
+    exit(0);
+}
 do{
     printf("Client : ");
     fgets(buff,sizeof(buff),stdin);
