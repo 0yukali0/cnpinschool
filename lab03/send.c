@@ -1,51 +1,87 @@
-// The?source for?sender.c: 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#define SERVERPORT "8888"    // the port users will be connecting to
-int main(int argc, char *argv[]) {
-    int sockfd;
-    struct addrinfo hints, *servinfo, *p;
-    int rv;
-    int numbytes;
-    if (argc != 3) {
-        fprintf(stderr,"usage: sender hostname message\n");
-        exit(1);
+#include<stdio.h>
+
+#include<sys/types.h> 
+
+#include<netinet/in.h> 
+
+#include<sys/socket.h> 
+
+#include<arpa/inet.h>
+
+#include<string.h> 
+
+#include<unistd.h> 
+
+#include<stdlib.h>
+
+#define PORT 7844
+
+int main(int argc,char *argv[]) {
+
+int sockfd,len;
+
+struct sockaddr_in serv,cliaddr;
+
+char buff[2000]; 
+if((sockfd=socket(AF_INET,SOCK_DGRAM,0))<0)
+
+{
+
+    perror("ERROR creating socket");
+
+    exit(0);
+
+}
+
+printf("UDP Client Socket Created Successfully.\n"); 
+
+memset(&serv,0,sizeof(serv)); 
+serv.sin_family=AF_INET; 
+
+serv.sin_port=htons(PORT);
+
+serv.sin_addr.s_addr=inet_addr(argv[1]);
+
+connect(sockfd,(struct sockaddr*)&serv,sizeof(serv));
+
+do{
+
+    printf("Client : ");
+
+    fgets(buff,sizeof(buff),stdin);
+
+    if((write(sockfd,buff,sizeof(buff)))<0) {
+
+        perror("ERROR IN SENDTO");
+
     }
-    memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_DGRAM;
-    if ((rv = getaddrinfo(argv[1], SERVERPORT, &hints, &servinfo)) != 0) {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        return 1;
+
+    if(strcmp(buff," ")==0) {
+
+        exit(0);
+
+    } 
+
+    strcpy(buff," ");
+
+    if((read(sockfd,buff,sizeof(buff)))<0) {
+
+        perror("ERROR IN RECVFROM"); 
+
+        exit(0);
+
     }
-    // loop through all the results and make a socket
-    for(p = servinfo; p != NULL; p = p->ai_next) {
-        if ((sockfd = socket(p->ai_family, p->ai_socktype,
-                p->ai_protocol)) == -1) {
-            perror("sender: socket");
-            continue;
-        }
-        break;
-    }
-    if (p == NULL) {
-        fprintf(stderr, "sender: failed to create socket\n");
-        return 2;
-    }
-  if ((numbytes = sendto(sockfd, argv[2], strlen(argv[2]), 0,
-             p->ai_addr, p->ai_addrlen)) == -1) {
-        perror("sender: sendto");
-        exit(1);
-    }
-    freeaddrinfo(servinfo);
-    printf("sender: sent %d bytes to %s\n", numbytes, argv[1]);
-    close(sockfd);
-    return 0;
+
+    fputs("From Server : ",stdout); 
+
+    fputs(buff,stdout); 
+
+} while(strcmp(buff," ")!=0);
+
+
+
+close(sockfd);
+
+return 0;
+
 }
