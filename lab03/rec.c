@@ -75,7 +75,7 @@ do {
    struct tm *info;
    time( &rawtime );
    info = localtime( &rawtime );
-   strftime(buf,MAXLINE,"%x - %I:%M%p", info);
+   strftime(buf,MAXLINE,"%x - %I:%M%p\n", info);
 
     if((sendto(sockfd,buf,a,0,(struct sockaddr *)&cliaddr,len))<0)
 
