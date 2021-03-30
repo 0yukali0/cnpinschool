@@ -1,3 +1,4 @@
+// The?source for?sender.c: 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -9,7 +10,6 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #define SERVERPORT "8888"    // the port users will be connecting to
-#define MAXBUFLEN 20
 int main(int argc, char *argv[]) {
     int sockfd;
     struct addrinfo hints, *servinfo, *p;
@@ -39,24 +39,13 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "sender: failed to create socket\n");
         return 2;
     }
-    printf("UDP Client Socket Created Successfully.\n");
-    if ((numbytes = sendto(sockfd, argv[2], strlen(argv[2]), 0,
+  if ((numbytes = sendto(sockfd, argv[2], strlen(argv[2]), 0,
              p->ai_addr, p->ai_addrlen)) == -1) {
         perror("sender: sendto");
         exit(1);
     }
     freeaddrinfo(servinfo);
-    printf("Client : %s\n",argv[2]);
-    char buf[MAXBUFLEN];
-    struct sockaddr_in cli;
-    unsigned int len;
-    numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0, (struct sockaddr*)&cli, &len);
-    if (numbytes == -1) {
-        perror("recvfrom");
-        exit(1);
-    } else {
-        printf("From Server : %s\n",buf);
-    }
+    printf("sender: sent %d bytes to %s\n", numbytes, argv[1]);
     close(sockfd);
     return 0;
 }
