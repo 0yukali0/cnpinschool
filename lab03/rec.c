@@ -20,10 +20,13 @@
 int main(int argc,char *argv[]) {
 
 char buf[MAXLINE+1];
+char time_buf[MAXLINE+1]
 
 int sockfd,len,a;
 
 struct sockaddr_in servaddr,cliaddr;
+
+bool showtime = false;
 
 if((sockfd=socket(AF_INET,SOCK_DGRAM,0))<0)
 
@@ -69,13 +72,13 @@ do {
 
     }
 
-    printf("From Client : %s",buf); 
+    printf("From Client : %s",buf);
 
-   time_t rawtime;
-   struct tm *info;
-   time( &rawtime );
-   info = localtime( &rawtime );
-   strftime(buf,MAXLINE,"%x - %I:%M%p\n", info);
+    time_t rawtime;
+    struct tm *info;
+    time( &rawtime );
+    info = localtime( &rawtime );
+    strftime(time_buf,MAXLINE,"Time:%x - %I:%M%p\n", info);
 
     if((sendto(sockfd,buf,a,0,(struct sockaddr *)&cliaddr,len))<0)
 
