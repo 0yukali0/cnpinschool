@@ -23,7 +23,7 @@ char buf[MAXLINE+1];
 char time_buf[MAXLINE+1];
 
 int sockfd,len,a;
-
+int show_time = 0;
 struct sockaddr_in servaddr,cliaddr;
 
 if((sockfd=socket(AF_INET,SOCK_DGRAM,0))<0)
@@ -72,35 +72,22 @@ do {
 
     printf("From Client : %s",buf);
 
-    time_t rawtime;
-    struct tm *info;
-    time( &rawtime );
-    info = localtime( &rawtime );
-    strftime(time_buf,MAXLINE,"Time:%x - %I:%M%p\n", info);
-
-    if((sendto(sockfd,buf,a,0,(struct sockaddr *)&cliaddr,len))<0)
-
-    {
-
-        perror("NOTHING SENT"); 
-
-        exit(0);
-
-    }
     printf("Server : ");
-    fgets(buf,sizeof(buf),stdin);
-
-    if((sendto(sockfd,buf,a,0,(struct sockaddr *)&cliaddr,len))<0)
-
-    {
-
-        perror("NOTHING SENT"); 
-
-        exit(0);
-
+    if(show_time == 0) {
+        show_time = 1;
+        time_t rawtime;
+        struct tm *info;
+        time( &rawtime );
+        info = localtime( &rawtime );
+        strftime(time_buf,MAXLINE,"Time:%x - %I:%M%p\n", info);
+        strcat(time_buf,buf);
+        strcpy(buf," ");
+        strcpy(buf,time_buf);
     }
-
-
+    if((sendto(sockfd,buf,a,0,(struct sockaddr *)&cliaddr,len))<0){
+        perror("NOTHING SENT"); 
+        exit(0);
+    }
 } 
 while(strcmp(buf," ")!=0); 
 
