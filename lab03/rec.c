@@ -20,7 +20,7 @@
 int main(int argc,char *argv[]) {
 
 char buf[MAXLINE+1];
-char time_buf[MAXLINE+1]
+char time_buf[MAXLINE+1];
 
 int sockfd,len,a;
 
