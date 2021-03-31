@@ -26,8 +26,6 @@ int sockfd,len,a;
 
 struct sockaddr_in servaddr,cliaddr;
 
-bool showtime = false;
-
 if((sockfd=socket(AF_INET,SOCK_DGRAM,0))<0)
 
 {
