@@ -45,12 +45,10 @@ int main(int argc, char *argv[])
     bzero(buffer,MAXLINE);
     
     while ( (n = read(sockfd, buffer, MAXLINE))) {
-	printf("n:%d\n",n);
         if (n < 0) error("ERROR reading from socket");
         printf("%s\n",buffer);
 	bzero(buffer,MAXLINE);
     }
-    printf("client job fin!\n");
     close(sockfd);
     return 0;
 }

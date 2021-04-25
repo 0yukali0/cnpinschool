@@ -63,25 +63,19 @@ int main(int argc, char **argv)
 
 void echo_every_sec(int sockfd)
 {
-    printf("echo start\n");
     int n, ismore = 0;
     double diff_time = 0;
     time_t last_time,this_time;
     struct tm* time_info;
     char buf[MAXLINE];
-
-    while (1) {
-    printf("make\n");
+    while(1){
     time(&last_time);
     time_info = localtime(&last_time);
     strftime(buf, MAXLINE, "%H:%M:%S", time_info);
-    printf("messge:%s\n",buf);
+    printf("%s\n",buf);
     n = write(sockfd, buf, strlen(buf));
-    printf("n:%d\n",n);
     if (n<0) perror("write socket error");
-    printf("sleep\n");
-    sleep(100);
-    printf("wake up\n");
+    sleep(1);
     }
 }
 
