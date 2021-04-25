@@ -1,17 +1,19 @@
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <netinet/in.h>
 #include <string.h>
 #include <errno.h>
 #include <signal.h>
 
-#define MAXLINE  64
+#define MAXLINE  256
+#define SECOND 1000
 
-void str_echo(int fd);
+void echo_every_sec(int sockfd);
 void sig_chld(int signo);
 
 int main(int argc, char **argv)
@@ -48,8 +50,10 @@ int main(int argc, char **argv)
         }
 
         if ((childpid = fork()) == 0){ // child
+	    printf("child go\n");
             close(listenfd); // close listening socket
-            str_echo(connfd);// process the request
+            echo_every_sec(connfd);// process the request
+	    close(connfd);
             exit(0);
         }
         close(connfd); // parent closes connected socket
@@ -57,17 +61,28 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void str_echo(int sockfd)
+void echo_every_sec(int sockfd)
 {
-    int n;
+    printf("echo start\n");
+    int n, ismore = 0;
+    double diff_time = 0;
+    time_t last_time,this_time;
+    struct tm* time_info;
     char buf[MAXLINE];
-again:
-    while ( (n = read(sockfd, buf, MAXLINE)))
-        write(sockfd, buf, n);
-    if (n < 0 && errno == EINTR)
-        goto again;
-    else if (n < 0)
-        printf("str_echo: read error");
+
+    while (1) {
+    printf("make\n");
+    time(&last_time);
+    time_info = localtime(&last_time);
+    strftime(buf, MAXLINE, "%H:%M:%S", time_info);
+    printf("messge:%s\n",buf);
+    n = write(sockfd, buf, strlen(buf));
+    printf("n:%d\n",n);
+    if (n<0) perror("write socket error");
+    printf("sleep\n");
+    sleep(100);
+    printf("wake up\n");
+    }
 }
 
 void sig_chld(int signo)
