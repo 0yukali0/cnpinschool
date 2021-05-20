@@ -1,6 +1,4 @@
 #include	"unp.h"
-#include <sys/time.h>
-#include <unistd.h>
 void
 str_cli(FILE *fp, int sockfd)
 {
@@ -27,26 +25,23 @@ str_cli(FILE *fp, int sockfd)
 					return;		/* normal termination */
 				else
 					err_quit("str_cli: server terminated prematurely");
-			} else {
-				Write(sockfd,"60",strlen("60"));
-				return 0;
 			}
 
 			Write(fileno(stdout), buf, n);
 		}
 
-		if (FD_ISSET(fileno(fp), &rset)) {  /* input is readable */
+		else if (FD_ISSET(fileno(fp), &rset)) {  /* input is readable */
 			if ( (n = Read(fileno(fp), buf, MAXLINE)) == 0) {
 				stdineof = 1;
 				Shutdown(sockfd, SHUT_WR);	/* send FIN */
 				FD_CLR(fileno(fp), &rset);
 				continue;
-			} else {
-				Write(sockfd, "60", strlen("60"));
-				return 0;
 			}
 
 			Writen(sockfd, buf, n);
+		}
+		else {
+			Writen(sockfd, "idle", strlen("idle"));
 		}
 	}
 }
